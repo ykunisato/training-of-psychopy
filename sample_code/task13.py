@@ -33,6 +33,7 @@ try:
             {'correctRes': '3', 'congruent': 2, 'kanjiName': u'黄', 'color': (-1, -1, 1), 'kanjiNum': '2'},
             {'correctRes': '3', 'congruent': 1, 'kanjiName': u'青', 'color': (-1, -1, 1), 'kanjiNum': '3'}
             ]
+    N = len(charConditionList)
     #正当か誤答かを保存する変数
     correctIncorrect = 0
 
@@ -52,7 +53,7 @@ try:
     # 内側のforループをM回繰り返すためのfor文
     for m in range(M):
         # 内側のfor文（range(9)で0~8のリストを作成し、前から順番でiにいれる）
-        for currentState in numpy.random.shuffle(range(9)):
+        for currentState in numpy.random.shuffle(range(N-1)):
             charCondition = charConditionList[currentState]
 
             myText = visual.TextStim(myWin,text = charCondition['kanjiName'],pos=(0,0),color = charCondition['color'],height=0.2)
@@ -112,7 +113,7 @@ try:
 
             # １試行の結果の保存
             results.append([
-                9*(m)+i,
+                N*(m)+i,
                 charCondition['kanjiNum'],
                 charCondition['correctRes'],
                 charCondition['congruent'],
