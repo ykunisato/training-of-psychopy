@@ -127,7 +127,7 @@ try:
     datafile=open(os.path.join(curD,'log/Sub'+expInfo['Participant']+'_'+expInfo[ 'dateStr']+'.csv'),'wb')
     datafile.write('trial,meaning,color,congruent,response,correct,RT\n')
     for r in results:
-        datafile.write('%d,%s,%s,%d,%s,%d,%f\n' % tuple(r))
+        datafile.write('{0}, {1}, {2}, {3}, {4}, {5}, {6}\n'.format(*r))
     datafile.close()
 
 except TypeError, e:
