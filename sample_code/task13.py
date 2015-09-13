@@ -2,6 +2,9 @@
 from psychopy import visual, core, event, gui, data, misc
 import numpy, os, random, time, csv
 
+#試行回数
+M = 2
+
 try:
     # 参加者IDの取得
     try:
@@ -43,8 +46,8 @@ try:
     #反応時間の計測のための設定
     stopwatch = core.Clock()
 
-    # 内側のforループを2回繰り返すためのfor文
-    for m in range(2):
+    # 内側のforループをM回繰り返すためのfor文
+    for m in range(M):
         # 内側のfor文（range(9)で0~8のリストを作成し、前から順番でiにいれる）
         for currentState in numpy.random.shuffle(range(9)):
             #　kanjiListのcurrentState番目（kanjiList[currentState]）を、
