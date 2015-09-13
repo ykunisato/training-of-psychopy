@@ -27,8 +27,6 @@ try:
     correctReslist = ['1','1','1','2','2','2','3','3','3']
     # 一致条件と不一致条件について(1=一致、2=不一致)
     congruentList = [1,2,2,2,1,2,2,2,1]
-    # ランダムに提示するためのリスト
-    randomList = range(9)
     #正当か誤答かを保存する変数
     correctIncorrect = 0
 
@@ -47,13 +45,11 @@ try:
 
     # 内側のforループを2回繰り返すためのfor文
     for m in range(2):
-        # randomListをシャッフルする。
-        numpy.random.shuffle(randomList)
         # 内側のfor文（range(9)で0~8のリストを作成し、前から順番でiにいれる）
-        for i in range(9):
-            #　kanjiListのrandomList[i]番目（kanjiList[randomList[i]]）を、
-            # colorListのrandomList[i]番目の色(colorList[randomList[i]])で提示する。
-            myText = visual.TextStim(myWin,text = kanjiList[randomList[i]],pos=(0,0),color = colorList[randomList[i]],height=0.2)
+        for currentState in numpy.random.shuffle(range(9)):
+            #　kanjiListのcurrentState番目（kanjiList[currentState]）を、
+            # colorListのcurrentState番目の色(colorList[currentState])で提示する。
+            myText = visual.TextStim(myWin,text = kanjiList[currentState],pos=(0,0),color = colorList[currentState],height=0.2)
             myText.draw()
             myWin.flip()
 
@@ -75,8 +71,6 @@ try:
             if not Responded:
                 Responded = [('no respose', 0)]
             #### 参加者の反応測定終了
-
-            currentState = randomList[i]
 
             # 正解、不正解のフィードバックと中視点提示
             if Responded[0][0] == 'no respose':
