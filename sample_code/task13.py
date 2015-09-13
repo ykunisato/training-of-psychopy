@@ -22,14 +22,17 @@ try:
     #　画面の準備（灰色の画面、マウスはallowGUI=Falseで表示されないようにしている）
     myWin = visual.Window (fullscr=True, monitor= 'Default', allowGUI=False, units='norm', color= (0,0,0))
     # 文字（漢字)のリスト
-    kanjiList = [u'赤',u'黄',u'青',u'赤',u'黄',u'青',u'赤',u'黄',u'青']
-    kanjiList2 = ['1','3','3','1','2','3','1','2','3']
-    # 色のリスト(visual.TextStimのcolorにいれる)
-    colorList = [(1,-1,-1),(1,-1,-1),(1,-1,-1),(1,1,-1),(1,1,-1),(1,1,-1),(-1,-1,1),(-1,-1,1),(-1,-1,1)]
-    # 正答の反応(色のリストに対応したキーボードの反応)
-    correctReslist = ['1','1','1','2','2','2','3','3','3']
-    # 一致条件と不一致条件について(1=一致、2=不一致)
-    congruentList = [1,2,2,2,1,2,2,2,1]
+    charConditionList = [
+            {'correctRes': '1', 'congruent': 1, 'kanjiName': u'赤', 'color': (1, -1, -1), 'kanjiNum': '1'},
+            {'correctRes': '1', 'congruent': 2, 'kanjiName': u'黄', 'color': (1, -1, -1), 'kanjiNum': '3'},
+            {'correctRes': '1', 'congruent': 2, 'kanjiName': u'青', 'color': (1, -1, -1), 'kanjiNum': '3'},
+            {'correctRes': '2', 'congruent': 2, 'kanjiName': u'赤', 'color':  (1, 1, -1), 'kanjiNum': '1'},
+            {'correctRes': '2', 'congruent': 1, 'kanjiName': u'黄', 'color':  (1, 1, -1), 'kanjiNum': '2'},
+            {'correctRes': '2', 'congruent': 2, 'kanjiName': u'青', 'color':  (1, 1, -1), 'kanjiNum': '3'},
+            {'correctRes': '3', 'congruent': 2, 'kanjiName': u'赤', 'color': (-1, -1, 1), 'kanjiNum': '1'},
+            {'correctRes': '3', 'congruent': 2, 'kanjiName': u'黄', 'color': (-1, -1, 1), 'kanjiNum': '2'},
+            {'correctRes': '3', 'congruent': 1, 'kanjiName': u'青', 'color': (-1, -1, 1), 'kanjiNum': '3'}
+            ]
     #正当か誤答かを保存する変数
     correctIncorrect = 0
 
@@ -50,9 +53,9 @@ try:
     for m in range(M):
         # 内側のfor文（range(9)で0~8のリストを作成し、前から順番でiにいれる）
         for currentState in numpy.random.shuffle(range(9)):
-            #　kanjiListのcurrentState番目（kanjiList[currentState]）を、
-            # colorListのcurrentState番目の色(colorList[currentState])で提示する。
-            myText = visual.TextStim(myWin,text = kanjiList[currentState],pos=(0,0),color = colorList[currentState],height=0.2)
+            charCondition = charConditionList[currentState]
+
+            myText = visual.TextStim(myWin,text = charCondition['kanjiName'],pos=(0,0),color = charCondition['color'],height=0.2)
             myText.draw()
             myWin.flip()
 
@@ -83,7 +86,7 @@ try:
                 rtText = visual.TextStim(myWin,text = str(Responded[0][1])+u'秒',pos=(0,-0.5),color = (-1,-1,-1),height=0.2)
                 # 保存用の結果
                 correctIncorrect = 2
-            elif Responded[0][0]== correctReslist[currentState]:
+            elif Responded[0][0]== currentState['correctRes']:
                 # fbTextに、フィードバックする文字をいれる
                 fbText = visual.TextStim(myWin,text = u'正解',pos=(0,-0.3),color = (-1,-1,-1),height=0.2)
                 # rtTextに、フィードバックする反応時間(Responded[0][0])をいれる
@@ -110,9 +113,9 @@ try:
             # １試行の結果の保存
             results.append([
                 9*(m)+i,
-                kanjiList2[currentState],
-                correctReslist[currentState],
-                congruentList[currentState],
+                charCondition['kanjiNum'],
+                charCondition['correctRes'],
+                charCondition['congruent'],
                 Responded[0][0],
                 correctIncorrect,
                 Responded[0][1]
