@@ -76,6 +76,8 @@ try:
                 Responded = [('no respose', 0)]
             #### 参加者の反応測定終了
 
+            currentState = randomList[i]
+
             # 正解、不正解のフィードバックと中視点提示
             if Responded[0][0] == 'no respose':
                 # fbTextに、フィードバックする文字をいれる
@@ -84,7 +86,7 @@ try:
                 rtText = visual.TextStim(myWin,text = str(Responded[0][1])+u'秒',pos=(0,-0.5),color = (-1,-1,-1),height=0.2)
                 # 保存用の結果
                 correctIncorrect = 2
-            elif Responded[0][0]== correctReslist[randomList[i]]:
+            elif Responded[0][0]== correctReslist[currentState]:
                 # fbTextに、フィードバックする文字をいれる
                 fbText = visual.TextStim(myWin,text = u'正解',pos=(0,-0.3),color = (-1,-1,-1),height=0.2)
                 # rtTextに、フィードバックする反応時間(Responded[0][0])をいれる
@@ -109,7 +111,16 @@ try:
             core.wait(2)
 
             # １試行の結果の保存
-            results.append([9*(m)+i]+[kanjiList2[randomList[i]]]+[correctReslist[randomList[i]]]+[congruentList[randomList[i]]]+[Responded[0][0]]+[correctIncorrect]+[Responded[0][1]])
+            results.append([
+                9*(m)+i,
+                kanjiList2[currentState],
+                correctReslist[currentState],
+                congruentList[currentState],
+                Responded[0][0],
+                correctIncorrect,
+                Responded[0][1]
+                ]
+                )
 
     # 最終的な結果を保存
     curD = os.getcwd()
