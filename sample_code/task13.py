@@ -53,7 +53,9 @@ try:
     # 内側のforループをM回繰り返すためのfor文
     for m in range(M):
         # 内側のfor文（range(9)で0~8のリストを作成し、前から順番でiにいれる）
-        for currentState in numpy.random.shuffle(range(N-1)):
+        r = range(N-1)
+        numpy.random.shuffle(r)
+        for i, currentState in enumerate(r):
             charCondition = charConditionList[currentState]
 
             myText = visual.TextStim(myWin,text = charCondition['kanjiName'],pos=(0,0),color = charCondition['color'],height=0.2)
