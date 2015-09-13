@@ -113,7 +113,7 @@ try:
 
             # １試行の結果の保存
             results.append([
-                N*(m)+i,
+                N*m + i,
                 charCondition['kanjiNum'],
                 charCondition['correctRes'],
                 charCondition['congruent'],
