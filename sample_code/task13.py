@@ -87,7 +87,7 @@ try:
                 rtText = visual.TextStim(myWin,text = str(Responded[0][1])+u'秒',pos=(0,-0.5),color = (-1,-1,-1),height=0.2)
                 # 保存用の結果
                 correctIncorrect = 2
-            elif Responded[0][0]== currentState['correctRes']:
+            elif Responded[0][0]== charCondition['correctRes']:
                 # fbTextに、フィードバックする文字をいれる
                 fbText = visual.TextStim(myWin,text = u'正解',pos=(0,-0.3),color = (-1,-1,-1),height=0.2)
                 # rtTextに、フィードバックする反応時間(Responded[0][0])をいれる
