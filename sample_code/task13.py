@@ -2,6 +2,9 @@
 from psychopy import visual, core, event, gui, data, misc
 import numpy, os, random, time, csv
 
+#試行回数
+M = 2
+
 try:
     # 参加者IDの取得
     try:
@@ -19,16 +22,18 @@ try:
     #　画面の準備（灰色の画面、マウスはallowGUI=Falseで表示されないようにしている）
     myWin = visual.Window (fullscr=True, monitor= 'Default', allowGUI=False, units='norm', color= (0,0,0))
     # 文字（漢字)のリスト
-    kanjiList = [u'赤',u'黄',u'青',u'赤',u'黄',u'青',u'赤',u'黄',u'青']
-    kanjiList2 = ['1','3','3','1','2','3','1','2','3']
-    # 色のリスト(visual.TextStimのcolorにいれる)
-    colorList = [(1,-1,-1),(1,-1,-1),(1,-1,-1),(1,1,-1),(1,1,-1),(1,1,-1),(-1,-1,1),(-1,-1,1),(-1,-1,1)]
-    # 正答の反応(色のリストに対応したキーボードの反応)
-    correctReslist = ['1','1','1','2','2','2','3','3','3']
-    # 一致条件と不一致条件について(1=一致、2=不一致)
-    congruentList = [1,2,2,2,1,2,2,2,1]
-    # ランダムに提示するためのリスト
-    randomList = range(9)
+    charConditionList = [
+            {'correctRes': '1', 'congruent': 1, 'kanjiName': u'赤', 'color': (1, -1, -1), 'kanjiNum': '1'},
+            {'correctRes': '1', 'congruent': 2, 'kanjiName': u'黄', 'color': (1, -1, -1), 'kanjiNum': '3'},
+            {'correctRes': '1', 'congruent': 2, 'kanjiName': u'青', 'color': (1, -1, -1), 'kanjiNum': '3'},
+            {'correctRes': '2', 'congruent': 2, 'kanjiName': u'赤', 'color':  (1, 1, -1), 'kanjiNum': '1'},
+            {'correctRes': '2', 'congruent': 1, 'kanjiName': u'黄', 'color':  (1, 1, -1), 'kanjiNum': '2'},
+            {'correctRes': '2', 'congruent': 2, 'kanjiName': u'青', 'color':  (1, 1, -1), 'kanjiNum': '3'},
+            {'correctRes': '3', 'congruent': 2, 'kanjiName': u'赤', 'color': (-1, -1, 1), 'kanjiNum': '1'},
+            {'correctRes': '3', 'congruent': 2, 'kanjiName': u'黄', 'color': (-1, -1, 1), 'kanjiNum': '2'},
+            {'correctRes': '3', 'congruent': 1, 'kanjiName': u'青', 'color': (-1, -1, 1), 'kanjiNum': '3'}
+            ]
+    N = len(charConditionList)
     #正当か誤答かを保存する変数
     correctIncorrect = 0
 
@@ -45,15 +50,15 @@ try:
     #反応時間の計測のための設定
     stopwatch = core.Clock()
 
-    # 内側のforループを2回繰り返すためのfor文
-    for m in range(2):
-        # randomListをシャッフルする。
-        numpy.random.shuffle(randomList)
+    # 内側のforループをM回繰り返すためのfor文
+    for m in range(M):
         # 内側のfor文（range(9)で0~8のリストを作成し、前から順番でiにいれる）
-        for i in range(9):
-            #　kanjiListのrandomList[i]番目（kanjiList[randomList[i]]）を、
-            # colorListのrandomList[i]番目の色(colorList[randomList[i]])で提示する。
-            myText = visual.TextStim(myWin,text = kanjiList[randomList[i]],pos=(0,0),color = colorList[randomList[i]],height=0.2)
+        r = range(N)
+        numpy.random.shuffle(r)
+        for i, currentState in enumerate(r):
+            charCondition = charConditionList[currentState]
+
+            myText = visual.TextStim(myWin,text = charCondition['kanjiName'],pos=(0,0),color = charCondition['color'],height=0.2)
             myText.draw()
             myWin.flip()
 
@@ -84,7 +89,7 @@ try:
                 rtText = visual.TextStim(myWin,text = str(Responded[0][1])+u'秒',pos=(0,-0.5),color = (-1,-1,-1),height=0.2)
                 # 保存用の結果
                 correctIncorrect = 2
-            elif Responded[0][0]== correctReslist[randomList[i]]:
+            elif Responded[0][0]== charCondition['correctRes']:
                 # fbTextに、フィードバックする文字をいれる
                 fbText = visual.TextStim(myWin,text = u'正解',pos=(0,-0.3),color = (-1,-1,-1),height=0.2)
                 # rtTextに、フィードバックする反応時間(Responded[0][0])をいれる
@@ -109,14 +114,23 @@ try:
             core.wait(2)
 
             # １試行の結果の保存
-            results.append([9*(m)+i]+[kanjiList2[randomList[i]]]+[correctReslist[randomList[i]]]+[congruentList[randomList[i]]]+[Responded[0][0]]+[correctIncorrect]+[Responded[0][1]])
+            results.append([
+                N*m + i,
+                charCondition['kanjiNum'],
+                charCondition['correctRes'],
+                charCondition['congruent'],
+                Responded[0][0],
+                correctIncorrect,
+                Responded[0][1]
+                ]
+                )
 
     # 最終的な結果を保存
     curD = os.getcwd()
-    datafile=open(os.path.join(curD,'log/Sub'+expInfo['Participant']+'_'+expInfo[ 'dateStr']+'.csv'),'wb')
+    datafile=open(os.path.join(curD, 'log', 'Sub{0}_{1}.csv'.format(expInfo['Participant'], expInfo[ 'dateStr'])),'wb')
     datafile.write('trial,meaning,color,congruent,response,correct,RT\n')
     for r in results:
-        datafile.write('%d,%s,%s,%d,%s,%d,%f\n' % tuple(r))
+        datafile.write('{0}, {1}, {2}, {3}, {4}, {5}, {6}\n'.format(*r))
     datafile.close()
 
 except TypeError, e:
