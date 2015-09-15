@@ -128,7 +128,7 @@ try:
     # 最終的な結果を保存
     curD = os.getcwd()
     datafile=open(os.path.join(curD, 'log', 'Sub{0}_{1}.csv'.format(expInfo['Participant'], expInfo[ 'dateStr'])),'wb')
-    datafile.write('trial,meaning,color,congruent,response,correct,RT\n')
+    datafile.write('trial, meaning, color, congruent, response, correct, RT\n')
     for r in results:
         datafile.write('{0}, {1}, {2}, {3}, {4}, {5}, {6}\n'.format(*r))
     datafile.close()
