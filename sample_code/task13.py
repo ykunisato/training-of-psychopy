@@ -22,26 +22,42 @@ try:
     #　画面の準備（灰色の画面、マウスはallowGUI=Falseで表示されないようにしている）
     myWin = visual.Window (fullscr=True, monitor= 'Default', allowGUI=False, units='norm', color= (0,0,0))
     # 文字（漢字)のリスト
+
+    colorDic = {
+            u'赤': {'rgb': ( 1, -1,-1), 'type': '0'},
+            u'黄': {'rgb': ( 1,  1,-1), 'type': '1'},
+            u'青': {'rgb': (-1, -1, 1), 'type': '2'}
+            }
+
     charConditionList = [
-            {'correctRes': '1', 'congruent': 1, 'kanjiName': u'赤', 'color': (1, -1, -1), 'kanjiNum': '1'},
-            {'correctRes': '1', 'congruent': 2, 'kanjiName': u'黄', 'color': (1, -1, -1), 'kanjiNum': '3'},
-            {'correctRes': '1', 'congruent': 2, 'kanjiName': u'青', 'color': (1, -1, -1), 'kanjiNum': '3'},
-            {'correctRes': '2', 'congruent': 2, 'kanjiName': u'赤', 'color':  (1, 1, -1), 'kanjiNum': '1'},
-            {'correctRes': '2', 'congruent': 1, 'kanjiName': u'黄', 'color':  (1, 1, -1), 'kanjiNum': '2'},
-            {'correctRes': '2', 'congruent': 2, 'kanjiName': u'青', 'color':  (1, 1, -1), 'kanjiNum': '3'},
-            {'correctRes': '3', 'congruent': 2, 'kanjiName': u'赤', 'color': (-1, -1, 1), 'kanjiNum': '1'},
-            {'correctRes': '3', 'congruent': 2, 'kanjiName': u'黄', 'color': (-1, -1, 1), 'kanjiNum': '2'},
-            {'correctRes': '3', 'congruent': 1, 'kanjiName': u'青', 'color': (-1, -1, 1), 'kanjiNum': '3'}
+            {'kanjiChar': u'赤', 'color': u'赤'},
+            {'kanjiChar': u'黄', 'color': u'赤'},
+            {'kanjiChar': u'青', 'color': u'赤'},
+            {'kanjiChar': u'赤', 'color': u'黄'},
+            {'kanjiChar': u'黄', 'color': u'黄'},
+            {'kanjiChar': u'青', 'color': u'黄'},
+            {'kanjiChar': u'赤', 'color': u'青'},
+            {'kanjiChar': u'黄', 'color': u'青'},
+            {'kanjiChar': u'青', 'color': u'青'}
             ]
     N = len(charConditionList)
     #正当か誤答かを保存する変数
-    correctIncorrect = 0
+    correctIncorrect = None
 
     # 結果を保存する場所を準備
     results=[]
 
     # 教示をだす。
-    instText = visual.TextStim(myWin,text = u'今から、色のついた文字がでてきます。\n文字の意味ではなく、文字の色に基づいてボタン押しをしてください。\n\n文字が赤色なら、キーボードの１を押してください。\n文字が黄色なら、キーボードの２を押してください。\n文字が青色なら、キーボードの３を押してください。\n\nこの教示が読めたら、「スペース」キーを押して課題を始めてください',pos=(0,0),color = (-1,-1,-1),height=0.1)
+    instructionStr = u"""\
+今から、色のついた文字がでてきます。
+文字の意味ではなく、文字の色に基づいてボタン押しをしてください。
+
+文字が赤色なら、キーボードの１を押してください。
+文字が黄色なら、キーボードの２を押してください。
+文字が青色なら、キーボードの３を押してください。
+
+この教示が読めたら、「スペース」キーを押して課題を始めてください"""
+    instText = visual.TextStim(myWin, text=instructionStr, pos=(0,0), color=(-1,-1,-1), height=0.1)
     instText.draw()
     myWin.flip()
     #　参加者がspaceキーを押すまで画面を出したまま待つ。
@@ -57,8 +73,10 @@ try:
         numpy.random.shuffle(r)
         for i, currentState in enumerate(r):
             charCondition = charConditionList[currentState]
+            colorData = colorDic[charCondition['color']]
+            kanjiCharData = colorDic[charCondition['kanjiChar']]
 
-            myText = visual.TextStim(myWin,text = charCondition['kanjiName'],pos=(0,0),color = charCondition['color'],height=0.2)
+            myText = visual.TextStim(myWin,text = charCondition['kanjiChar'],pos=(0,0),color = colorData['rgb'],height=0.2)
             myText.draw()
             myWin.flip()
 
@@ -68,7 +86,7 @@ try:
             #ストッウォッチをリセット
             stopwatch.reset()
             # 参加者の反応をリセット
-            Responded = False
+            Responded = None
             #ストップウォッチをリセットしてからstopwatch.getTime()で
             #測定した時間が1秒を超えるまで以下の処理を実行
             while stopwatch.getTime() < 1:
@@ -88,21 +106,21 @@ try:
                 # rtTextに、フィードバックする反応時間(Responded[0][0])をいれる
                 rtText = visual.TextStim(myWin,text = str(Responded[0][1])+u'秒',pos=(0,-0.5),color = (-1,-1,-1),height=0.2)
                 # 保存用の結果
-                correctIncorrect = 2
-            elif Responded[0][0]== charCondition['correctRes']:
+                correctIncorrect = None
+            elif Responded[0][0]== colorData['type']:
                 # fbTextに、フィードバックする文字をいれる
                 fbText = visual.TextStim(myWin,text = u'正解',pos=(0,-0.3),color = (-1,-1,-1),height=0.2)
                 # rtTextに、フィードバックする反応時間(Responded[0][0])をいれる
                 rtText = visual.TextStim(myWin,text = str(Responded[0][1])+u'秒',pos=(0,-0.5),color = (-1,-1,-1),height=0.2)
                 # 保存用の結果
-                correctIncorrect = 1
+                correctIncorrect = True
             else:
                 # fbTextに、フィードバックする文字をいれる
                 fbText = visual.TextStim(myWin,text = u'不正解',pos=(0,-0.3),color = (-1,-1,-1),height=0.2)
                 # rtTextに、フィードバックする反応時間(Responded[0][0])をいれる
                 rtText = visual.TextStim(myWin,text = str(Responded[0][1])+u'秒',pos=(0,-0.5),color = (-1,-1,-1),height=0.2)
                 # 保存用の結果
-                correctIncorrect = 0
+                correctIncorrect = False
             #上記で設定したフィードバックと反応時間の書き込み
             fbText.draw()
             rtText.draw()
@@ -114,11 +132,13 @@ try:
             core.wait(2)
 
             # １試行の結果の保存
+            kanjiCharType = kanjiCharData['type']
+            colorType = colorData['type']
             results.append([
                 N*m + i,
-                charCondition['kanjiNum'],
-                charCondition['correctRes'],
-                charCondition['congruent'],
+                kanjiCharType,
+                colorType,
+                colorType==kanjiCharType,
                 Responded[0][0],
                 correctIncorrect,
                 Responded[0][1]
@@ -128,7 +148,7 @@ try:
     # 最終的な結果を保存
     curD = os.getcwd()
     datafile=open(os.path.join(curD, 'log', 'Sub{0}_{1}.csv'.format(expInfo['Participant'], expInfo[ 'dateStr'])),'wb')
-    datafile.write('trial,meaning,color,congruent,response,correct,RT\n')
+    datafile.write('trial, meaning, color, congruent, response, correct, RT\n')
     for r in results:
         datafile.write('{0}, {1}, {2}, {3}, {4}, {5}, {6}\n'.format(*r))
     datafile.close()
