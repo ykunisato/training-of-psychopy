@@ -68,7 +68,7 @@ try:
             #ストッウォッチをリセット
             stopwatch.reset()
             # 参加者の反応をリセット
-            Responded = False
+            Responded = None
             #ストップウォッチをリセットしてからstopwatch.getTime()で
             #測定した時間が1秒を超えるまで以下の処理を実行
             while stopwatch.getTime() < 1:
