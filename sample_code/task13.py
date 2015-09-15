@@ -35,7 +35,7 @@ try:
             ]
     N = len(charConditionList)
     #正当か誤答かを保存する変数
-    correctIncorrect = 0
+    correctIncorrect = None
 
     # 結果を保存する場所を準備
     results=[]
@@ -88,21 +88,21 @@ try:
                 # rtTextに、フィードバックする反応時間(Responded[0][0])をいれる
                 rtText = visual.TextStim(myWin,text = str(Responded[0][1])+u'秒',pos=(0,-0.5),color = (-1,-1,-1),height=0.2)
                 # 保存用の結果
-                correctIncorrect = 2
             elif Responded[0][0]== charCondition['correctRes']:
+                correctIncorrect = None
                 # fbTextに、フィードバックする文字をいれる
                 fbText = visual.TextStim(myWin,text = u'正解',pos=(0,-0.3),color = (-1,-1,-1),height=0.2)
                 # rtTextに、フィードバックする反応時間(Responded[0][0])をいれる
                 rtText = visual.TextStim(myWin,text = str(Responded[0][1])+u'秒',pos=(0,-0.5),color = (-1,-1,-1),height=0.2)
                 # 保存用の結果
-                correctIncorrect = 1
+                correctIncorrect = True
             else:
                 # fbTextに、フィードバックする文字をいれる
                 fbText = visual.TextStim(myWin,text = u'不正解',pos=(0,-0.3),color = (-1,-1,-1),height=0.2)
                 # rtTextに、フィードバックする反応時間(Responded[0][0])をいれる
                 rtText = visual.TextStim(myWin,text = str(Responded[0][1])+u'秒',pos=(0,-0.5),color = (-1,-1,-1),height=0.2)
                 # 保存用の結果
-                correctIncorrect = 0
+                correctIncorrect = False
             #上記で設定したフィードバックと反応時間の書き込み
             fbText.draw()
             rtText.draw()
