@@ -299,6 +299,29 @@ myText = visual.TextStim(myWin,text = str(numList[i]),pos=(-0.5,0),color = (1,0.
 
 **ヒント** 注視点は、visual.TextStimのtextに’＋’を入れればよい。
 
+**ヒント** これまでは，[]をつかって，list1 = [1,2,3,4,5]のような感じでリストを作ってきました。
+今回は，色と文字の組み合わせが複雑ですので，辞書型というものを導入します。
+
+辞書型の基本形は以下のようになります。{}内の要素はカンマ(,)で区切ります。要素は値とキーのペアで構成され、値とキーはコロン(:)で区切ります。
+
+{キー1:値1, キー2:値2, ...}
+
+つまり，キー１と値１は対応があり，キー２と値２には対応があることになります。これを上の色とかの話にすると。文字(kanjiChar)と色（color）の組み合わせは以下のように記述することができます。
+
+```python
+charConditionList = [
+				{'kanjiChar': u'赤', 'color': u'赤'},
+				{'kanjiChar': u'黄', 'color': u'赤'},
+				{'kanjiChar': u'青', 'color': u'赤'},
+				{'kanjiChar': u'赤', 'color': u'黄'},
+				{'kanjiChar': u'黄', 'color': u'黄'},
+				{'kanjiChar': u'青', 'color': u'黄'},
+				{'kanjiChar': u'赤', 'color': u'青'},
+				{'kanjiChar': u'黄', 'color': u'青'},
+				{'kanjiChar': u'青', 'color': u'青'}
+				]
+```
+
 **検討事項**
 現在、task8.pyでは、刺激のリストを辞書型で扱っている。これは、近日中にこのReadMeにも反映させる予定になります。
 
