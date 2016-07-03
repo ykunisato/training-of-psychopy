@@ -308,6 +308,21 @@ myText = visual.TextStim(myWin,text = str(numList[i]),pos=(-0.5,0),color = (1,0.
 
 つまり，キー１と値１は対応があり，キー２と値２には対応があることになります。これを上の色とかの話にすると。文字(kanjiChar)と色（color）の組み合わせは以下のように記述することができます。
 
+例えば，以下のようにすると，赤，黄，青という色に対応するRGBの値（visual.TextStim内のcolorで指定する値）を辞書として格納できます。つまり，赤という日本語の文字は，rgbで1,-1,-1に対応し，ここで設定したtypeでは0になるということです。
+
+```python
+colorDic = {
+				u'赤': {'rgb': ( 1, -1,-1), 'type': '0'},
+				u'黄': {'rgb': ( 1,  1,-1), 'type': '1'},
+				u'青': {'rgb': (-1, -1, 1), 'type': '2'}
+				}
+```
+なんだか余計面倒ではないかという気持ちにもなるわけですが，より複雑なプログラムを書く時に覚えておくと便利なテクニックに思います。
+
+**ヒント** これまでは，[]をつかって，list1 = [1,2,3,4,5]のような感じでリストを作ってきましたが，もう少し刺激の組み合わせを考慮したリストを使ったほうが便利です。
+例えば，今回のストループ課題では，文字が３種，色が３種で，合計９種の組み合わせがあります。その組み合わせをリストにしておきます。
+文字と色との組み合わせは，リスト内で，{}を使うとできます。つまり，[｛色,文字｝,...]って感じです。
+
 ```python
 charConditionList = [
 				{'kanjiChar': u'赤', 'color': u'赤'},
@@ -323,6 +338,28 @@ charConditionList = [
 ```
 
 
+
+
+# 辞書の長さ（刺激セット数）
+N = len(charConditionList)
+
+# 内側のforループをM回繰り返すためのfor文
+for m in range(M):
+		r = range(N)
+		for i, currentState in enumerate(r):
+				charCondition = charConditionList[currentState]
+				colorData = colorDic[charCondition['color']]
+				kanjiCharData = colorDic[charCondition['kanjiChar']]
+				#　kanjiListのi番目（kanjiList[i]）を、colorListのi番目の色(colorList[i])で提示する。
+				myText = visual.TextStim(myWin,text = charCondition['kanjiChar'],pos=(0,0),color = colorData['rgb'],height=0.2)
+				myText.draw()
+				myWin.flip()
+				core.wait(1)
+				#　中視点(+)を1秒提示する。
+				myText = visual.TextStim(myWin,text = '+',pos=(0,0),color = (-1,-1,-1),height=0.2)
+				myText.draw()
+				myWin.flip()
+				core.wait(1)
 
 
 **検討事項**
