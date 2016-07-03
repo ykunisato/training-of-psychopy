@@ -297,18 +297,16 @@ myText = visual.TextStim(myWin,text = str(numList[i]),pos=(-0.5,0),color = (1,0.
 1. 青色の「黄」(不一致)
 1. 青色の「青」(一致)
 
-**ヒント** 注視点は、visual.TextStimのtextに’＋’を入れればよい。
+**ヒント1** 注視点は、visual.TextStimのtextに’＋’を入れればよい。
 
-**ヒント** これまでは，[]をつかって，list1 = [1,2,3,4,5]のような感じでリストを作ってきました。
-今回は，色と文字の組み合わせが複雑ですので，辞書型というものを導入します。
-
-辞書型の基本形は以下のようになります。{}内の要素はカンマ(,)で区切ります。要素は値とキーのペアで構成され、値とキーはコロン(:)で区切ります。
+**ヒント2** これまでは，[]をつかって，list1 = [1,2,3,4,5]のような感じでリストを作ってきました。
+今回は，色と文字の組み合わせが複雑ですので，辞書型というものを導入します。辞書型の基本形は以下のようになります。
+{}内の要素はカンマ(,)で区切ります。要素は値とキーのペアで構成され、値とキーはコロン(:)で区切ります。
 
 {キー1:値1, キー2:値2, ...}
 
-つまり，キー１と値１は対応があり，キー２と値２には対応があることになります。これを上の色とかの話にすると。文字(kanjiChar)と色（color）の組み合わせは以下のように記述することができます。
-
-例えば，以下のようにすると，赤，黄，青という色に対応するRGBの値（visual.TextStim内のcolorで指定する値）を辞書として格納できます。つまり，赤という日本語の文字は，rgbで1,-1,-1に対応し，ここで設定したtypeでは0になるということです。
+つまり，キー１と値１は対応があり，キー２と値２には対応があることになります。これを上の色とかの話にすると。
+文字(kanjiChar)と色（color）の組み合わせは以下のように記述することができます。
 
 ```python
 colorDic = {
@@ -317,12 +315,13 @@ colorDic = {
 				u'青': {'rgb': (-1, -1, 1), 'type': '2'}
 				}
 ```
-なんだか余計面倒ではないかという気持ちにもなるわけですが，より複雑なプログラムを書く時に覚えておくと便利なテクニックに思います。
+上記のようにすると，赤，黄，青という色に対応するRGBの値（visual.TextStim内のcolorで指定する値）を
+辞書として格納できます。つまり，赤という日本語の文字は，rgbで1,-1,-1に対応し，ここで設定したtypeでは0になるということです。
+なんだか余計面倒ではないかという気持ちにもなるわけですが，より複雑なプログラムを書く時に覚えておくと便利なテクニックです。
 
-**ヒント** これまでは，[]をつかって，list1 = [1,2,3,4,5]のような感じでリストを作ってきましたが，もう少し刺激の組み合わせを考慮したリストを使ったほうが便利です。
-例えば，今回のストループ課題では，文字が３種，色が３種で，合計９種の組み合わせがあります。その組み合わせをリストにしておきます。
-文字と色との組み合わせは，リスト内で，{}を使うとできます。つまり，[｛色,文字｝,...]って感じです。
-
+**ヒント3** 辞書型の導入に追加して，より複雑なリストの使用法を導入します。
+例えば，今回のストループ課題では，文字が３種，色が３種で，合計９種の組み合わせがあります。
+このような２つ以上の事柄（文字と色）の組み合わせをリストにする時は以下のようにします。
 ```python
 charConditionList = [
 				{'kanjiChar': u'赤', 'color': u'赤'},
@@ -336,35 +335,48 @@ charConditionList = [
 				{'kanjiChar': u'青', 'color': u'青'}
 				]
 ```
+まず，上記のように，リスト[]内で，{}を使うと組み合わせにできます。
+つまり，[｛色,文字｝,...]ってすると，色と文字が組み合わせになってリストになります。
+そして，今回は，辞書型にもなっており，kanjiCharとcolorの辞書にもなっています。
+これは，あとで，操作をする上で便利になるので，とりあえずは，飲み込んでみてください。
 
+**ヒント4** これまでは，ループをする時に，その繰り返し回数をrange()を使って指定してきました。
+しかし，実験では，繰り返し回数を変更することもよくありますので，繰り返し回数を変数にしておいて，
+その変数でループを回せると便利です。特に，今回は，charConditionListに刺激の組み合わせを
+用意していますので，その刺激のリストの長さがループの繰り返し回数に対応します。それを使うと便利です。
 
+```python
+# charConditionListを繰り返す回数(９個入ったリストを２回繰り返す)
+M =2
 
-
-# 辞書の長さ（刺激セット数）
+# charConditionListの長さを調べる
 N = len(charConditionList)
-
-# 内側のforループをM回繰り返すためのfor文
+#　上で指定したMとNを使ってループを回す。
 for m in range(M):
 		r = range(N)
 		for i, currentState in enumerate(r):
-				charCondition = charConditionList[currentState]
-				colorData = colorDic[charCondition['color']]
-				kanjiCharData = colorDic[charCondition['kanjiChar']]
-				#　kanjiListのi番目（kanjiList[i]）を、colorListのi番目の色(colorList[i])で提示する。
-				myText = visual.TextStim(myWin,text = charCondition['kanjiChar'],pos=(0,0),color = colorData['rgb'],height=0.2)
-				myText.draw()
-				myWin.flip()
-				core.wait(1)
-				#　中視点(+)を1秒提示する。
-				myText = visual.TextStim(myWin,text = '+',pos=(0,0),color = (-1,-1,-1),height=0.2)
-				myText.draw()
-				myWin.flip()
-				core.wait(1)
+```
+上記のように指定したMやNでループを回すと，回数を変更するときなどに，Mやリストを変更するだけで良いので便利です。
+なお，ここで，range()ではなく，enumerate()というのがでてきました。まず，リストの長さ(N)をrange(N)でrにいれて，
+それをenumerate(r)にしています。enumerate()を使うと、その前のi,currentStateにインデックス（何番目か？）と要素（何か？）の
+情報をいれてくれます。現段階では，それほど便利でもないですが，今後，リストをenumerateにいれたりできると，
+リストの何番目の刺激で，なんの刺激かの情報が，i,currentStateにはいります（もちろん，iやcurrentStateは，
+自分で設定できます）。
 
 
-**検討事項**
-現在、task8.pyでは、刺激のリストを辞書型で扱っている。これは、近日中にこのReadMeにも反映させる予定になります。
+**ヒント5** 上記で作った辞書やリストを元にして，刺激を準備する。ややこしいですが，ちょっとずつ慣れていってください。
 
+```python
+# currentStateに入っているの数字（range(N=9)のどれか）でcharConditionListから選んで，charConditionに入れる。
+charCondition = charConditionList[currentState]
+# charConditionを元にして，colorDicから文字の色のRGBやtypeの情報を取り出す。
+colorData = colorDic[charCondition['color']]
+# charConditionを元にして，colorDicから文字の意味のRGBやtypeの情報を取り出す。
+#　以下の処理は今回は不要ですが，あとで，typeを活用するので必要になる。
+kanjiCharData = colorDic[charCondition['kanjiChar']]
+#　kanjiListのi番目（kanjiList[i]）を、colorListのi番目の色(colorList[i])で提示する。
+myText = visual.TextStim(myWin,text = charCondition['kanjiChar'],pos=(0,0),color = colorData['rgb'],height=0.2)
+```
 
 ## 課題９
 *「課題８で作ったストループ課題について、刺激をランダムに提示してみよう！」*
