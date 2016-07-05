@@ -65,7 +65,10 @@ try:
 
     #反応時間の計測のための設定
     stopwatch = core.Clock()
-
+    
+    # 参加者の反応をリセット
+    Responded = None
+    
     # 内側のforループをM回繰り返すためのfor文
     for m in range(M):
         # 内側のfor文（range(9)で0~8のリストを作成し、前から順番でiにいれる）
@@ -99,7 +102,7 @@ try:
                 Responded = [('no respose', 0)]
             #### 参加者の反応測定終了
 
-            # 正解、不正解のフィードバックと中視点提示
+            # 正解、不正解のフィードバック
             if Responded[0][0] == 'no respose':
                 # fbTextに、フィードバックする文字をいれる
                 fbText = visual.TextStim(myWin,text = u'無反応',pos=(0,-0.3),color = (-1,-1,-1),height=0.2)

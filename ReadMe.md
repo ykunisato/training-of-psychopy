@@ -403,9 +403,6 @@ numpy.random.shuffle(r)
 （今後は、myTextではなくて、意味の分かりやすい名前にする。instTextは、instruction(教示)の
 文章という意味です）。
 
-
-# 以下修正中
-
 ## 課題11
 *「課題10について、参加者の反応を測定してみましょう!」*
 
@@ -420,28 +417,28 @@ numpy.random.shuffle(r)
 
 参加者のキーボードでの反応をまつ場合は、event.waitKeys()を使います。
 myWin.flip()して、画面を出してから、以下のようにすれば、参加者がスペースを
-押すまで待ちます（core.wait()は使わない）。
+押すまで待ちます（今回は，core.wait()を使わない）。
 
 ```python
 keyList = event.waitKeys(keyList=['space'])
 ```
 
-私たちの関心は、刺激に対する参加者がどのような反応をして、その反応までの時間(反応時間)が
-どのくらいだったかになります。まず、刺激を提示することにかかわるfor文の前にcore.Clock()を
-stopwatchに格納します。これで、core.Clock()の機能はstopwatchになります。
+これで，教示を読み終わったらスペースキーを押すことで課題に進むことができるようになりました。
+しかし，私たちの関心は、刺激に対する参加者がどのような反応をして、その反応までの時間(反応時間)が
+どのくらいだったかになります。では，ここからは，ストループ課題での反応を測定しましょう！
+
+まず、刺激を提示することにかかわるfor文の前にcore.Clock()を
+stopwatchに格納します。これで、core.Clock()の機能はstopwatchになります(stopwatchはcore.Clock()ということ)。
 
 ```python
 #反応時間の計測のための設定
 stopwatch = core.Clock()
 ```
 
-そして、実験刺激を提示するmyWin.flip()をして、画面を出してから、以下のコードを書き込みます。
-event.clearEvents()、stopwatch.reset()、Responded = Falseで反応時間や反応を
-リセットしてから、while関数を使って、stopwatchで測定した時間（stopwatch.getTime())が1を超えるまで、
-event.getKeysで反応を測定します。event.getKeysで指定した反応の測定と反応時間を計測できます。
+そして、実験刺激を提示するmyWin.flip()をして、画面を出してから、以下のコードを書き込みます(core.wait(1)を消して，以下を書き込む)。
 
 ```python
-##### 参加者の反応測定開始
+# 参加者の反応測定開始
 # 前回の刺激提示の影響を消去する
 event.clearEvents()
 #ストッウォッチをリセット
@@ -458,8 +455,13 @@ while stopwatch.getTime() < 1:
 # もし1秒たっても反応がないなら、no responseと反応時間なしで処理する
 if not Responded:
 		Responded = [('no respose', 0)]
-#### 参加者の反応測定終了
+# 参加者の反応測定終了
 ```
+event.clearEvents()、stopwatch.reset()、Responded = Falseで反応時間や反応を
+リセットしてから、while関数を使って、stopwatchで測定した時間（stopwatch.getTime())が1を超えるまで、
+event.getKeysで反応を測定します。event.getKeysで指定した反応の測定と反応時間を計測できます。
+whileとかifが出てきていますが，とりあえず，スルーして進んで下さい。
+
 
 ## 課題12
 *「課題11で測定した参加者の反応にフィードバックをしてみよう!」*
@@ -482,32 +484,64 @@ elif 式B:
 else:
 	いずれも真でない時の実行文
 ```
-**ヒント** 条件分岐をつくるにあたって、以下のように正答の反応についてのリスト(correctReslist)を作る。
-もし、参加者の反応が、correctReslistと違う場合は誤答、一致した場合は正答になる。correctReslistは、
-反応のリストなので、1ではなく、'1'とする。なお、ストループにおいて、一致と不一致も重要なので、
-congruentListも作る。
+
+**ヒント** Responded = event.getKeys(keyList=['1','2','3'],timeStamped=stopwatch)の
+Respondedには，反応内容(押したキー(1,2,3)やno response)と反応時間が入っている。Responded[0][0]は
+（つまりRespondedの１行１列目），反応内容であり，Responded[0][1]は（Respondedの１行２列目），
+反応時間が入っている。
+
+
+**ヒント** Responded[0][0]に入っている反応内容と最初のほうで設定している辞書のcolorData['type']が
+一致すれば，正解になり，不一致だと不正解になる。また，反応をしないno reseponseの場合は，反応なしになる。
 
 ```python
-# 文字（漢字)のリスト
-kanjiList = [u'赤',u'黄',u'青',u'赤',u'黄',u'青',u'赤',u'黄',u'青']
-# 色のリスト(visual.TextStimのcolorにいれる)
-correctReslist = [(1,-1,-1),(1,-1,-1),(1,-1,-1),(1,1,-1),(1,1,-1),(1,1,-1),(-1,-1,1),(-1,-1,1),(-1,-1,1)]
-# 正答の反応(色のリストに対応したキーボードの反応)
-correctReslist = ['1','1','1','2','2','2','3','3','3']
-# 一致条件と不一致条件について(1=一致、2=不一致)
-congruentList = [1,2,2,2,1,2,2,2,1]
-```
-
-上記のリストを用いて、おおまかには以下のような感じで条件分岐を作ってみましょう。
-
-```python
+# 正解、不正解のフィードバック
 if Responded[0][0] == 'no respose':
-	反応がなかった場合、画面に「反応なし」と反応時間0秒を提示
-elif Responded[0][0]== correctReslist[randomList[i]]:
-	反応がcorrectReslistと一致した場合は、画面に「正解」と反応時間を提示
+	# fbTextに、フィードバックする文字をいれる
+  fbText = visual.TextStim(myWin,text = u'無反応',pos=(0,-0.3),color = (-1,-1,-1),height=0.2)
+  # rtTextに、フィードバックする反応時間(Responded[0][0])をいれる
+  rtText = visual.TextStim(myWin,text = str(Responded[0][1])+u'秒',pos=(0,-0.5),color = (-1,-1,-1),height=0.2)
+  # 保存用の結果
+  correctIncorrect = None
+elif Responded[0][0]== colorData['type']:
+	# fbTextに、フィードバックする文字をいれる
+	fbText = visual.TextStim(myWin,text = u'正解',pos=(0,-0.3),color = (-1,-1,-1),height=0.2)
+	# rtTextに、フィードバックする反応時間(Responded[0][0])をいれる
+	rtText = visual.TextStim(myWin,text = str(Responded[0][1])+u'秒',pos=(0,-0.5),color = (-1,-1,-1),height=0.2)
+	# 保存用の結果
+	correctIncorrect = True
 else:
-	反応なしでもなく、反応がcorrectReslistと一致したわけでもない場合（つまり不一致）、画面に「不正解」と反応時間を提示
+	# fbTextに、フィードバックする文字をいれる
+	fbText = visual.TextStim(myWin,text = u'不正解',pos=(0,-0.3),color = (-1,-1,-1),height=0.2)
+	# rtTextに、フィードバックする反応時間(Responded[0][0])をいれる
+  rtText = visual.TextStim(myWin,text = str(Responded[0][1])+u'秒',pos=(0,-0.5),color = (-1,-1,-1),height=0.2)
+  # 保存用の結果
+  correctIncorrect = False
 ```
+上記では，まず，Responded[0][0] がno responseの状況から処理をしていきます。no responseの場合は，fbTextで
+u'無反応'を入れておきます。また，rtTextでは，str(Responded[0][1])を使って反応時間が文字になるようにしています。
+最後の，保存用の結果のcorrectIncorrect = Noneは，次回（課題13）で使うので今はとりあえず打っておいてください。
+
+次に，Responded[0][0]== colorData['type']，つまり，反応内容（Responded[0][0]）と辞書のタイプ（colorData['type'])が
+一緒の場合になります。この場合は，正解なので，fbTextで，u'正解'を入れておきます。反応時間や保存用の結果については，上の場合と同じです。
+
+最後に，elseとうことで，no responseでも，反応内容と辞書のタイプが一致しないような場合になります。これは，不正解なので，
+fbTextでu'不正解'をいれておきます。反応時間や保存用の結果については，上の場合と同じです。
+
+
+fbTextやrtTextが準備できたら，draw()で書き込んで，注視点とともにflip()させてください。
+```python
+#上記で設定したフィードバックと反応時間の書き込み
+fbText.draw()
+rtText.draw()
+# 中視点の準備
+myText = visual.TextStim(myWin,text = '+',pos=(0,0),color = (-1,-1,-1),height=0.2)
+myText.draw()
+#　画面表示
+myWin.flip()
+core.wait(2)
+```
+
 
 ## 課題13
 *「課題12の結果を保存してみよう!」*
