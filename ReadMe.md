@@ -552,17 +552,18 @@ core.wait(2)
 入力すると、expInfoに被験者IDと実行日時（例.2013_Nov_20_1646）が入ります。
 
 ```python
+# 参加者IDの取得
 try:
-    expInfo = misc.fromFile('lastParams.pickle')
+	expInfo = misc.fromFile('lastParams.pickle')
 except:
-    expInfo = {'Participant':'001'}
+	expInfo = {'Participant':'001'}
 
 expInfo['dateStr']= data.getDateStr()
 dlg = gui.DlgFromDict(expInfo, title='Experiment', fixed=['dateStr'])
 if dlg.OK:
-    misc.toFile('lastParams.pickle', expInfo)
+	misc.toFile('lastParams.pickle', expInfo)
 else:
-    core.quit()
+	core.quit()
 ```
 
 まず、結果を保存する場合、その結果を入れていく場所を作ります。
@@ -585,18 +586,36 @@ results=[]
 1. 反応時間
 
 append()を使って、resultsに刺激や反応を追加していきます([]と+で繋いでいく)。
-課題13の場合、上記の保存したい情報は、以下のようになります。
+課題13の場合、上記の保存したい情報を準備していきます。まず，後の処理が楽なように，
+漢字や色のタイプをkanjiCharTypeやcolorTypeに代入しておきます。
 
-1. 何試行目か = 9*(m)+i
-1. 出した文字の意味 = kanjiList2[randomList[i]]
-1. 出した文字の色 = correctReslist[randomList[i]]
-1. 条件（一致条件、不一致条件）= congruentList[randomList[i]]
+```python
+kanjiCharType = kanjiCharData['type']
+colorType = colorData['type']
+```
+そして，上記の保存したい情報を以下のように準備します。
+
+1. 何試行目か = N*m+i
+1. 出した文字の意味 = kanjiCharType
+1. 出した文字の色 = colorType
+1. 条件（一致条件、不一致条件）= colorType==kanjiCharType
 1. 反応 = Responded[0][0]
 1. 正答か誤答 = CorrectIncorrect
 1. 反応時間 = Responded[0][1]
 
+PsychoPyでこれらの情報を保存する場合は，各試行ごとに，appendして（追加して）いきます。
 ```python
-results.append([9*(m)+i]+[kanjiList2[randomList[i]]]+[correctReslist[randomList[i]]]+[congruentList[randomList[i]]]+[Responded[0][0]]+[correctIncorrect]+[Responded[0][1]])
+# １試行の結果の保存
+results.append([
+		N*m + i,
+		kanjiCharType,
+		colorType,
+		colorType==kanjiCharType,
+		Responded[0][0],
+		correctIncorrect,
+		Responded[0][1]
+		]
+		)
 ```
 
 resultsに各試行の情報が追加されていったら、それを最後にファイルに書き込んで保存します。
@@ -605,28 +624,20 @@ resultsに各試行の情報が追加されていったら、それを最後に�
 ディレクトリに結果を保存するファイルを作成します。
 
 ```python
+# 最終的な結果を保存
 curD = os.getcwd()
-datafile = open(os.path.join(curD,'log/Sub'+expInfo['Participant']+'_'+expInfo[ 'dateStr']+'.csv'),'wb')
+datafile=open(os.path.join(curD, 'log', 'Sub{0}_{1}.csv'.format(expInfo['Participant'], expInfo[ 'dateStr'])),'wb')
 ```
 
 ファイルが作成できたら、そのファイルにresultsの内容をwrite()で書き込んでいきます。書き込む際に、最初の
 一行目にヘッダーの情報を書き込みます(datafile.write('trial,meaning,color,congruent,response,correct,RT\n'))。
 改行\nを忘れないようにしましょう。
-その後、for文でresultsの一番上から書き込みをしていきます。datafile.write('%d,%s,%s,%d,%s,%d,%f\n' % tuple(r))の
-%dとか%sとかが重要です。文字列は%s、整数は%d、小数は%fになります。課題13の場合は以下のようになります。
-
-1. 何試行目か = 整数 = %d
-1. 出した文字の意味 = 文字 = %s
-1. 出した文字の色 = 文字 =  %s
-1. 条件（一致条件、不一致条件）= 整数 =  %d
-1. 反応 = 文字 =  %s
-1. 正答か誤答 = 整数 =  %d
-1. 反応時間 = 少数 =  %f
+その後、datafile.writeを使ったfor文でresultsの一番上から書き込みをしていきます。
 
 ```python
-datafile.write('trial,meaning,color,congruent,response,correct,RT\n')
+datafile.write('trial, meaning, color, congruent, response, correct, RT\n')
 for r in results:
-		datafile.write('%d,%s,%s,%d,%s,%d,%f\n' % tuple(r))
+		datafile.write('{0}, {1}, {2}, {3}, {4}, {5}, {6}\n'.format(*r))
 datafile.close()
 ```
 
