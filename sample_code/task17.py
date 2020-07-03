@@ -12,7 +12,7 @@ try:
     #時計の準備
     stopwatch = core.Clock()
     #動画刺激の準備
-    mov1 = visual.MovieStim(myWin, 'sea.mov',size = [640,480])
+    mov1 = visual.MovieStim3(myWin, 'sea.mov',size = [640,480])
     mov1.play()
     #時計のリセット
     stopwatch.reset()
