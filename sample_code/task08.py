@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-from psychopy import visual, core, event, gui, data, misc
-import numpy, os, random, time, csv
+from psychopy import visual, core
 
 #刺激セットの繰り返し数
 M = 2
@@ -47,5 +46,5 @@ try:
             myText.draw()
             myWin.flip()
             core.wait(1)
-except TypeError, e:
-    print e
+except TypeError as e:
+    print(e)

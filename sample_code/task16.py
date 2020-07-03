@@ -39,5 +39,5 @@ try:
     applauseSmall.play()
     core.wait(10)
 
-except TypeError, e:
-    print e
+except TypeError as e:
+    print(e)

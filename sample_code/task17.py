@@ -25,5 +25,5 @@ try:
             core.quit()
     myWin.close()
     core.quit()
-except TypeError, e:
-    print e
+except TypeError as e:
+    print(e)

@@ -105,5 +105,5 @@ try:
             #　画面表示
             myWin.flip()
             core.wait(2)
-except TypeError, e:
-    print e
+except TypeError as e:
+    print(e)

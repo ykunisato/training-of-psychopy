@@ -20,5 +20,5 @@ try:
             myText.draw()
             myWin.flip()
             core.wait(0.5)
-except TypeError, e:
-    print e
+except TypeError as e:
+    print(e)
