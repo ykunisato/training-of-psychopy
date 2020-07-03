@@ -13,5 +13,5 @@ try:
     myWin.flip()
     # 3秒待つ
     core.wait(3)
-except TypeError, e:
-    print e
+except TypeError as e:
+    print(e)
