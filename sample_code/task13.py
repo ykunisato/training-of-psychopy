@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from psychopy import visual, core, event, gui, data, misc
-import numpy, os, random, time, csv
+import numpy, os
 
 #試行回数
 M = 2
