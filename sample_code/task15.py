@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from psychopy import visual, core, event, gui, data, misc
-import numpy, os, random, time, csv
+from psychopy import visual, core
+import os
 
 #画面の設定
 myWin = visual.Window(fullscr=True,monitor='SubMonitor',allowGUI=False,screen=1,units='norm',color=(1,1,1))

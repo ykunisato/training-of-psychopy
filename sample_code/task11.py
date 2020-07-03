@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from psychopy import visual, core, event, gui, data, misc
-import numpy, os, random, time, csv
+from psychopy import visual, core, event
+import numpy
 
 #刺激セットの繰り返し数
 M = 2

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from psychopy import visual, sound, core, event, gui, data, misc
-import numpy, os, random, time, csv
+from psychopy import visual, sound, core
+import os
 
 #　画面の準備（灰色の画面、マウスはallowGUI=Falseで表示されないようにしている）
 myWin = visual.Window (fullscr=True, monitor= 'Default', allowGUI=False, units='norm', color= (0,0,0))
