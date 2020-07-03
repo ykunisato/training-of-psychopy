@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from psychopy import visual, core, event, gui, data, misc
-import numpy, os, random, time, csv
+from psychopy import visual, core, gui, data, misc
+import os
 
 try:
     # 参加者IDの取得
