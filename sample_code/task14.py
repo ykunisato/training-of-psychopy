@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from psychopy import visual, core, event, gui, data, misc
-import numpy, os, random, time, csv
+from psychopy import visual, core, gui, data, misc
+import os
 
 try:
     # 参加者IDの取得
@@ -38,10 +38,13 @@ try:
 
     # 結果の保存
     curD = os.getcwd()
-    datafile=open(os.path.join(curD,'log/Sub'+expInfo['Participant']+'_'+expInfo[ 'dateStr']+'.csv'),'wb')
+    # logフォルダーが存在しなければ、現在のダレクトリに作成する
+    if not os.path.exists(os.path.join(curD, 'log')):
+        os.makedirs(os.path.join(curD, 'log'))
+    datafile=open(os.path.join(curD,'log/Sub'+expInfo['Participant']+'_'+expInfo[ 'dateStr']+'.csv'),'w+')
     datafile.write('Question,Response,RT\n')
     for r in results:
         datafile.write('%d,%d,%f\n' % tuple(r))
     datafile.close()
-except TypeError, e:
-    print e
+except TypeError as e:
+    print(e)

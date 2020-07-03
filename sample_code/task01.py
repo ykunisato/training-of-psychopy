@@ -1,6 +1,7 @@
+# %%
+
 # -*- coding: utf-8 -*-
-from psychopy import visual, core, event, gui, data, misc
-import numpy, os, random, time, csv
+from psychopy import visual, core
 
 try:
     # 画面の準備
@@ -13,5 +14,8 @@ try:
     myWin.flip()
     # 3秒待つ
     core.wait(3)
-except TypeError, e:
-    print e
+except TypeError as e:
+    print(e)
+
+
+# %%

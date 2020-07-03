@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from psychopy import visual, core, event, gui, data, misc
-import numpy, os, random, time, csv
+import numpy, os
 
 #試行回数
 M = 2
@@ -72,7 +72,7 @@ try:
     # 内側のforループをM回繰り返すためのfor文
     for m in range(M):
         # 内側のfor文（range(9)で0~8のリストを作成し、前から順番でiにいれる）
-        r = range(N)
+        r = list(range(N))
         numpy.random.shuffle(r)
         for i, currentState in enumerate(r):
             charCondition = charConditionList[currentState]
@@ -150,11 +150,14 @@ try:
 
     # 最終的な結果を保存
     curD = os.getcwd()
-    datafile=open(os.path.join(curD, 'log', 'Sub{0}_{1}.csv'.format(expInfo['Participant'], expInfo[ 'dateStr'])),'wb')
+    # logフォルダーが存在しなければ、現在のダレクトリに作成する
+    if not os.path.exists(os.path.join(curD, 'log')):
+        os.makedirs(os.path.join(curD, 'log'))
+    datafile=open(os.path.join(curD, 'log', 'Sub{0}_{1}.csv'.format(expInfo['Participant'], expInfo[ 'dateStr'])),'w+')
     datafile.write('trial, meaning, color, congruent, response, correct, RT\n')
     for r in results:
         datafile.write('{0}, {1}, {2}, {3}, {4}, {5}, {6}\n'.format(*r))
     datafile.close()
 
-except TypeError, e:
-    print e
+except TypeError as e:
+    print(e)

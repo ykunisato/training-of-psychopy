@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from psychopy import visual, core, event, gui, data, misc
-import numpy, os, random, time, csv
+from psychopy import visual, core, event
+import os
 
 #　画面の準備（灰色の画面、マウスはallowGUI=Falseで表示されないようにしている）
 myWin = visual.Window (fullscr=True, allowGUI=False, color= (0,0,0))
@@ -12,7 +12,7 @@ try:
     #時計の準備
     stopwatch = core.Clock()
     #動画刺激の準備
-    mov1 = visual.MovieStim(myWin, 'sea.mov',size = [640,480])
+    mov1 = visual.MovieStim3(myWin, 'sea.mov',size = [640,480])
     mov1.play()
     #時計のリセット
     stopwatch.reset()
@@ -25,5 +25,5 @@ try:
             core.quit()
     myWin.close()
     core.quit()
-except TypeError, e:
-    print e
+except TypeError as e:
+    print(e)

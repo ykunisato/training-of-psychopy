@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-from psychopy import visual, core, event, gui, data, misc
-import numpy, os, random, time, csv
+from psychopy import visual, core
 
 #刺激セットの繰り返し数
 M = 2
@@ -32,7 +31,7 @@ try:
 
     # 内側のforループをM回繰り返すためのfor文
     for m in range(M):
-        r = range(N)
+        r = list(range(N))
         for i, currentState in enumerate(r):
             charCondition = charConditionList[currentState]
             colorData = colorDic[charCondition['color']]
@@ -47,5 +46,5 @@ try:
             myText.draw()
             myWin.flip()
             core.wait(1)
-except TypeError, e:
-    print e
+except TypeError as e:
+    print(e)
