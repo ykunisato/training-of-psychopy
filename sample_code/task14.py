@@ -43,5 +43,5 @@ try:
     for r in results:
         datafile.write('%d,%d,%f\n' % tuple(r))
     datafile.close()
-except TypeError, e:
-    print e
+except TypeError as e:
+    print(e)
