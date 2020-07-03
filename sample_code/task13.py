@@ -150,6 +150,9 @@ try:
 
     # 最終的な結果を保存
     curD = os.getcwd()
+    # logフォルダーが存在しなければ、現在のダレクトリに作成する
+    if not os.path.exists(os.path.join(curD, 'log')):
+        os.makedirs(os.path.join(curD, 'log'))
     datafile=open(os.path.join(curD, 'log', 'Sub{0}_{1}.csv'.format(expInfo['Participant'], expInfo[ 'dateStr'])),'wb')
     datafile.write('trial, meaning, color, congruent, response, correct, RT\n')
     for r in results:
