@@ -15,7 +15,7 @@ try:
     instText.draw()
     myWin.flip()
     # トーン音の作成準備とプレイ
-    tone = sound.Sound(value='C', sampleRate=44100, secs=1.0, bits=8, octave=5)
+    tone = sound.Sound(value='C', sampleRate=44100, secs=1.0, octave=5)
     tone.setVolume(0.5)
     tone.play()
     core.wait(2)
