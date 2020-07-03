@@ -76,5 +76,6 @@ try:
             myText.draw()
             myWin.flip()
             core.wait(1)
+            print(Responded)
 except TypeError as e:
     print(e)
