@@ -31,7 +31,7 @@ try:
 
     # 内側のforループをM回繰り返すためのfor文
     for m in range(M):
-        r = range(N)
+        r = list(range(N))
         for i, currentState in enumerate(r):
             charCondition = charConditionList[currentState]
             colorData = colorDic[charCondition['color']]
