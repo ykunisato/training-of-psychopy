@@ -7,6 +7,8 @@
 [メールフォーム](https://docs.google.com/forms/d/1OQ7pN-oQda1YwGvcTBga3oKkviI697uc9AQlGVhX2YI/viewform)にて
 ご連絡いただけましたら幸いです。
 
+**PsychoPy3に対応しました。**
+
 ## 課題0
 ### 課題0の1
 *「PsychoPyのダウンロードとインストールをしよう！」*
@@ -55,11 +57,11 @@ Coderは、プログラミングになる。プログラミングは、将来そ
 「シェル」タブに以下のコードを打ち込もう。
 ```python
 a = “Hello, Pyton!”
-print a
+print(a)
 ```
 “＝”は数学での意味とは違って、左辺に右辺のものを代入するという意味です。
-つまり、“Hello, Pyton!”という言葉をaに入れます（格納なんて言ったりする）。
-そして、その“Hello, Pyton!”が入ったaを出すにはprintという命令をつかいます。
+つまり、“Hello, Pyton!”という文字列をaという変数に入れます（格納なんて言ったりする）。
+そして、その“Hello, Pyton!”が入ったaを表示するにはprintという命令をつかいます。
 
 ![fig6](fig/fig6.png)
 
@@ -78,12 +80,13 @@ print a
 
 **ヒント** 以下のように、PsychoPyから必要なモジュールをインポートする
 （実験によって、インポートする内容は変わる）。PsychoPy以外にも
-Pythonで必要なモジュールをインポートする(numpy, os , random, time, csv)。
+Pythonで必要なモジュールをインポートする(numpy, os, random, time, csv)。
 
 ```python
 from psychopy import visual, core, event, gui, data, misc
-import numpy, os , random,time,csv
+import numpy, os, random, time, csv
 ```
+
 
 **ヒント** プログラミングをするとかならずエラーが生じます。
 エラーがあったら、以降の処理をストップして、エラーを報告してくれる方法として、
@@ -94,7 +97,7 @@ try-except文があります。これをつかうと、try以降のプログラ�
 try :
 	なんらかの処理
 except TypeError, e:
-	print e
+	print(e)
 ```
 
 **ヒント** 多くのプログラミング言語では、()とか{}を使って、処理の単位を区分します。
@@ -188,12 +191,12 @@ list2 = [u‘あ’,u‘い’,u‘う’,u‘え’,u‘お’]
 普通、リスト内の番号は、1から2,3,4…と数える、Pythonでは，0から1,2,3…と数えます。
 なので、list1[3]とした時は、３番目の3ではなくて４番目の４になります。list2[2]としたときは、u’い’ではなくu’う’になる。
 
-刺激のリストではなく、単純に0から１ずつ増える数字のリストを作りたい場合は、range()を使うと良い。
-range(リストの長さ)とすることで、必要な長さの0から始めるリストを作れる。
+刺激のリストではなく、単純に0から１ずつ増える数字のリストを作りたい場合は、list(range())を使うと良い。
+list(range(リストの長さ))とすることで、必要な長さの0から始めるリストを作れる。
 以下のようにすると、list3に[0,1,2,3,4,5,6,7]が入る(Pythonなので、1ではなくて0からスタート)。
 
 ```python
-list3 = range(8)
+list3 = list(range(8))
 ```
 
 **ヒント** 全く同じことを繰り返すときは、for文を使います。
@@ -210,7 +213,7 @@ for 変数　in　range(繰り返し数) :
 画面に表示(print)される。リストが最後までいくと繰り返しは終了する。
 ```python
 for i　in　range(5) :
-  print i
+  print(i)
 ```
 
 for文での変数（上記だとi）をうまく使うと色々と便利です。
@@ -219,7 +222,7 @@ for文での変数（上記だとi）をうまく使うと色々と便利です�
 ```python
 for i in range(5):
   for m in range(3):
-  	print m
+  	print(m)
 ```
 
 なお、リストは、for文の前で設定をするようにしてください。
@@ -567,7 +570,7 @@ else:
 ```
 
 まず、結果を保存する場合、その結果を入れていく場所を作ります。
-以下では、resultsという場所を作っています。今後、結果をここに入れてきます。
+以下では、resultsという空のリストを作っています。今後、結果をここに入れてきます。
 これは、教示や刺激を提示するコマンドの前（刺激リストのあとくらい）に入れておきます。
 
 ```python
@@ -620,13 +623,15 @@ results.append([
 
 resultsに各試行の情報が追加されていったら、それを最後にファイルに書き込んで保存します。
 そのためには、書き込む対象のファイルを作成（open）する必要があります。その際に、作成する場所を指定しますが、
-まずgetcwdで.pyファイルのあるディレクトリを調べて，path.joinを使ってそのディレクトリ内のlogという名前の
-ディレクトリに結果を保存するファイルを作成します。
+まずgetcwdで.pyファイルのあるディレクトリを調べて，その中にlogというディレクトリがあるか確認します。存在しない場合はlogディレクトリを作成します。次に、path.joinを使ってlogというディレクトリに結果を保存するファイルを作成します。
 
 ```python
 # 最終的な結果を保存
 curD = os.getcwd()
-datafile=open(os.path.join(curD, 'log', 'Sub{0}_{1}.csv'.format(expInfo['Participant'], expInfo[ 'dateStr'])),'wb')
+# logフォルダーが存在しなければ、現在のダレクトリに作成する
+if not os.path.exists(os.path.join(curD, 'log')):
+	os.makedirs(os.path.join(curD, 'log'))
+datafile=open(os.path.join(curD, 'log', 'Sub{0}_{1}.csv'.format(expInfo['Participant'], expInfo[ 'dateStr'])),'w+')
 ```
 
 ファイルが作成できたら、そのファイルにresultsの内容をwrite()で書き込んでいきます。書き込む際に、最初の
@@ -698,7 +703,7 @@ try:
 
 ```python
 #　画面の準備（灰色の画面、マウスはallowGUI=Falseで表示されないようにしている）
-myWin = visual.Window (fullscr=True, monitor= 'Default', allowGUI=False, units='norm', color= (0,0,0))
+myWin = visual.Window(fullscr=True, monitor= 'Default', allowGUI=False, units='norm', color= (0,0,0))
 #現在このコードのある場所のパスを取得して、そのパスの１つ下のstimフォルダに移動する（音声ファイルを読み込むため）
 curD = os.getcwd()
 os.chdir(os.path.join(curD,'stimli'))
@@ -707,7 +712,7 @@ instText = visual.TextStim(myWin,text = u'ピーって音',pos=(0,0),color = (-1
 instText.draw()
 myWin.flip()
 # トーン音の作成準備とプレイ
-tone = sound.Sound(value='C', sampleRate=44100, secs=1.0, bits=8, octave=5)
+tone = sound.Sound(value='C', sampleRate=44100, secs=1.0, octave=5)
 tone.setVolume(0.5)
 tone.play()
 core.wait(2)
@@ -726,14 +731,14 @@ core.wait(10)
 ## 課題17
 *「動画刺激を呈示してみよう!」*
 
-動画を呈示する場合は、MovieStim( )を使います。今回は、[mazwai.com](http://mazwai.com/)から再配布可能な動画をもってきて、
+動画を呈示する場合は、MovieStim3( )を使います。今回は、[mazwai.com](http://mazwai.com/)から再配布可能な動画をもってきて、
 呈示します。
 
 ```python
 #時計の準備
 stopwatch = core.Clock()
 #動画刺激の準備
-mov1 = visual.MovieStim(myWin, 'sea.mov',size = [640,480])
+mov1 = visual.MovieStim3(myWin, 'sea.mov',size = [640,480])
 mov1.play()
 #時計のリセット
 stopwatch.reset()
